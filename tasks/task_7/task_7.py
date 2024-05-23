@@ -6,7 +6,7 @@ import sys
 sys.path.append(os.path.abspath('../../'))
 
 class QuizGenerator:
-    def __init__(self, topic=None, num_questions=1, vectorstore=None):
+    def __init__(self, topic, num_questions=1, vectorstore=None):
         """
         Initializes the QuizGenerator with a required topic, the number of questions for the quiz,
         and an optional vectorstore for querying related information.
@@ -70,7 +70,9 @@ class QuizGenerator:
 
         Note: Ensure you have appropriate access or API keys if required by the model or platform.
         """
-        self.llm = VertexAI(
+        self.llm = VertexAI(model_name="gemini-pro",
+                            parameters={"temperature":0.7,
+                                        "max_output-tokens":1000}
             ############# YOUR CODE HERE ############
         )
         
@@ -103,19 +105,28 @@ class QuizGenerator:
         # Initialize the LLM from the 'init_llm' method if not already initialized
         # Raise an error if the vectorstore is not initialized on the class
         ############# YOUR CODE HERE ############
-        
+
+        self.init_llm()
+        if not self.vectorstore:
+            raise ValueError("Vectorstore is not initialized.")
+
+
         from langchain_core.runnables import RunnablePassthrough, RunnableParallel
 
+        
         ############# YOUR CODE HERE ############
         # Enable a Retriever using the as_retriever() method on the VectorStore object
         # HINT: Use the vectorstore as the retriever initialized on the class
         ############# YOUR CODE HERE ############
-        
+        retriever=self.vectorstore.db.as_retriever()
+
         ############# YOUR CODE HERE ############
         # Use the system template to create a PromptTemplate
         # HINT: Use the .from_template method on the PromptTemplate class and pass in the system template
         ############# YOUR CODE HERE ############
         
+        prompt = PromptTemplate.from_template(self.system_template)
+
         # RunnableParallel allows Retriever to get relevant documents
         # RunnablePassthrough allows chain.invoke to send self.topic to LLM
         setup_and_retrieval = RunnableParallel(
@@ -126,6 +137,8 @@ class QuizGenerator:
         # Create a chain with the Retriever, PromptTemplate, and LLM
         # HINT: chain = RETRIEVER | PROMPT | LLM 
         ############# YOUR CODE HERE ############
+
+        chain = setup_and_retrieval | prompt | self.llm
 
         # Invoke the chain with the topic as input
         response = chain.invoke(self.topic)
@@ -141,8 +154,8 @@ if __name__ == "__main__":
     
     embed_config = {
         "model_name": "textembedding-gecko@003",
-        "project": "YOUR-PROJECT-ID-HERE",
-        "location": "us-central1"
+        "project": "firstprojectofosman",
+        "location": "us-east4"
     }
     
     screen = st.empty()

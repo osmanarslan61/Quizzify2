@@ -57,15 +57,30 @@ class ChromaCollectionCreator:
         # Use a TextSplitter from Langchain to split the documents into smaller text chunks
         # https://python.langchain.com/docs/modules/data_connection/document_transformers/character_text_splitter
         # [Your code here for splitting documents]
-        
+        text_splitter = CharacterTextSplitter(
+            chunk_size=1000,
+            chunk_overlap=200,
+            separator='\n',
+            length_function=len
+        )
+        #print(type(self.processor.pages))
+        #print(self.processor.pages[0])
+        texts = text_splitter.split_documents(self.processor.pages)
+        #print(texts[0])
+        #print(texts[1])
+        #print(texts[2])
+        #print(texts[3])
         if texts is not None:
             st.success(f"Successfully split pages to {len(texts)} documents!", icon="✅")
-
+        #print(texts[0])
+        #print("-----------")
+        #print(texts[1])
         # Step 3: Create the Chroma Collection
         # https://docs.trychroma.com/
         # Create a Chroma in-memory client using the text chunks and the embeddings model
         # [Your code here for creating Chroma collection]
-        
+        self.db = Chroma.from_documents(texts, self.embed_model)
+
         if self.db:
             st.success("Successfully created Chroma Collection!", icon="✅")
         else:
@@ -93,8 +108,8 @@ if __name__ == "__main__":
     
     embed_config = {
         "model_name": "textembedding-gecko@003",
-        "project": "YOUR PROJECT ID HERE",
-        "location": "us-central1"
+        "project": "firstprojectofosman",
+        "location": "us-east4"
     }
     
     embed_client = EmbeddingClient(**embed_config) # Initialize from Task 4

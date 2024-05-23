@@ -86,7 +86,7 @@ class QuizGenerator:
         from langchain_core.runnables import RunnablePassthrough, RunnableParallel
 
         # Enable a Retriever
-        retriever = self.vectorstore.as_retriever()
+        retriever = self.vectorstore.db.as_retriever()
         
         # Use the system template to create a PromptTemplate
         prompt = PromptTemplate.from_template(self.system_template)
@@ -125,10 +125,11 @@ class QuizGenerator:
 
         for _ in range(self.num_questions):
             ##### YOUR CODE HERE #####
-            question_str = # Use class method to generate question
+            question_str = self.generate_question_with_vectorstore()# Use class method to generate question
             
             ##### YOUR CODE HERE #####
             try:
+                question = json.loads(question_str)
                 # Convert the JSON String to a dictionary
             except json.JSONDecodeError:
                 print("Failed to decode question JSON.")
@@ -143,7 +144,7 @@ class QuizGenerator:
             else:
                 print("Duplicate or invalid question detected.")
             ##### YOUR CODE HERE #####
-
+            self.question_bank.append(question)
         return self.question_bank
 
     def validate_question(self, question: dict) -> bool:
@@ -166,6 +167,11 @@ class QuizGenerator:
 
         Note: This method assumes `question` is a valid dictionary and `question_bank` has been properly initialized.
         """
+        is_unique = True
+        for q in self.question_bank:
+            if question["question"] == q["question"]:
+                is_unique = False
+                break
         ##### YOUR CODE HERE #####
         # Consider missing 'question' key as invalid in the dict object
         # Check if a question with the same text already exists in the self.question_bank
@@ -178,8 +184,8 @@ if __name__ == "__main__":
     
     embed_config = {
         "model_name": "textembedding-gecko@003",
-        "project": "YOUR-PROJECT-ID-HERE",
-        "location": "us-central1"
+        "project": "firstprojectofosman",
+        "location": "us-east4"
     }
     
     screen = st.empty()

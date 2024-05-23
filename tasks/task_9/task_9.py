@@ -26,8 +26,11 @@ class QuizManager:
 
         Note: This initialization method is crucial for setting the foundation of the `QuizManager` class, enabling it to manage the quiz questions effectively. The class will rely on this setup to perform operations such as retrieving specific questions by index and navigating through the quiz.
         """
+        self.questions = questions
+        self.total_questions = len(self.questions)
+
         ##### YOUR CODE HERE #####
-        pass # Placeholder
+        #pass # Placeholder
     ##########################################################
 
     def get_question_at_index(self, index: int):
@@ -62,7 +65,11 @@ class QuizManager:
         Note: Ensure that `st.session_state["question_index"]` is initialized before calling this method. This navigation method enhances the user experience by providing fluid access to quiz questions.
         """
         ##### YOUR CODE HERE #####
-        pass  # Placeholder for implementation
+        current_index = st.session_state["question_index"]
+        new_index = (current_index+direction) % self.total_questions
+        st.session_state["question_index"] = new_index
+        return new_index
+        #pass  # Placeholder for implementation
     ##########################################################
 
 
@@ -71,8 +78,8 @@ if __name__ == "__main__":
     
     embed_config = {
         "model_name": "textembedding-gecko@003",
-        "project": "YOUR-PROJECT-ID-HERE",
-        "location": "us-central1"
+        "project": "firstprojectofosman",
+        "location": "us-east4"
     }
     
     screen = st.empty()
@@ -112,25 +119,30 @@ if __name__ == "__main__":
             
             # Task 9
             ##########################################################
-            quiz_manager = # Use our new QuizManager class
+            quiz_manager = QuizManager(question_bank)
+            # Use our new QuizManager class
             # Format the question and display
             with st.form("Multiple Choice Question"):
                 ##### YOUR CODE HERE #####
-                index_question = # Use the get_question_at_index method to set the 0th index
+                index_question = quiz_manager.get_question_at_index(0)
+                # Use the get_question_at_index method to set the 0th index
                 ##### YOUR CODE HERE #####
                 
                 # Unpack choices for radio
                 choices = []
                 for choice in index_question['choices']: # For loop unpack the data structure
                     ##### YOUR CODE HERE #####
-                    # Set the key from the index question 
+                    # Set the key from the index question
+                    key = choice["key"] 
                     # Set the value from the index question
+                    value = choice["value"]
                     ##### YOUR CODE HERE #####
                     choices.append(f"{key}) {value}")
                 
                 ##### YOUR CODE HERE #####
                 # Display the question onto streamlit
                 ##### YOUR CODE HERE #####
+                st.write(index_question["question"])
                 
                 answer = st.radio( # Display the radio button with the choices
                     'Choose the correct answer',
