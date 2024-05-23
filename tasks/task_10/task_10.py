@@ -37,7 +37,7 @@ if __name__ == "__main__":
             
                 chroma_creator = ChromaCollectionCreator(processor, embed_client)
                 
-                ##### YOUR CODE HERE #####
+            
                 # Step 2: Set topic input and number of questions
                 ##### YOUR CODE HERE #####
                 topic_input = st.text_input("Topic for Generative Quiz", placeholder="Enter the topic of the document")
