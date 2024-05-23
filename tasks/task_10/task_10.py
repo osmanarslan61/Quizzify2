@@ -19,7 +19,6 @@ if __name__ == "__main__":
     # Add Session State
     if 'question_bank' not in st.session_state or len(st.session_state['question_bank']) == 0:
         
-        ##### YOUR CODE HERE #####
         # Step 1: init the question bank list in st.session_state
         ##### YOUR CODE HERE #####
         st.session_state['question_bank'] = []
