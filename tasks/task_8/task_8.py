@@ -123,7 +123,8 @@ class QuizGenerator:
         """
         self.question_bank = [] # Reset the question bank
 
-        for _ in range(self.num_questions):
+        while len(self.question_bank) < self.num_questions: 
+        #for _ in range(self.num_questions):
             ##### YOUR CODE HERE #####
             question_str = self.generate_question_with_vectorstore()# Use class method to generate question
             
